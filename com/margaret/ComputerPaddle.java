@@ -1,9 +1,12 @@
 package com.margaret;
 
-/**
- * Created by sn0173nd on 11/2/2015.
- */
 public class ComputerPaddle {
+
+    static int computerPaddleY = Main.screenSize / 2 ;  //location of the center of the paddles on the Y-axis of the screen
+    static int computerPaddleMaxSpeed = 3;  //Max number of pixels that computer paddle can move clock tick. Higher number = easier for computer
+    static int computerPaddleSpeed = 0;  // same
+    static int computerWins = 0; // Counter for how many times computer wins
+
     //Uses the current position of ball and paddle to move the computer paddle towards the ball
     protected static void moveComputerPaddle(){
 
@@ -15,20 +18,20 @@ public class ComputerPaddle {
 
         // constantly moving with the ball because it is called in the action listener that triggers every tick of the time
 
-        int ballPaddleDifference = Main.computerPaddleY - (int)Main.ballY;
-        int distanceToMove = Math.min(Math.abs(ballPaddleDifference), Main.computerPaddleMaxSpeed);
+        int ballPaddleDifference = computerPaddleY - (int)Ball.ballY;
+        int distanceToMove = Math.min(Math.abs(ballPaddleDifference), computerPaddleMaxSpeed);
 
-        System.out.println("computer paddle speed = " + Main.computerPaddleSpeed);
+        System.out.println("computer paddle speed = " + computerPaddleSpeed);
 
         if (ballPaddleDifference > 0 ) {   //Difference is positive - paddle is below ball on screen
-            Main.computerPaddleY -= distanceToMove;
+            computerPaddleY -= distanceToMove;
 
         } else if (ballPaddleDifference < 0){
-            Main.computerPaddleY += distanceToMove;
+            computerPaddleY += distanceToMove;
 
         } else {
             //Ball and paddle are aligned. Don't need to move!
-            Main.computerPaddleSpeed = 0;
+            computerPaddleSpeed = 0;
         }
 
     }

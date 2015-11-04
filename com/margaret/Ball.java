@@ -1,6 +1,25 @@
 package com.margaret;
 
+import java.util.Scanner;
+
 public class Ball {
+
+    static double  ballX = Main.screenSize / 2;   //Imagine the ball is in a square box. These are the coordinates of the top of that box.
+    static double  ballY = Main.screenSize / 2;   //So this starts the ball in (roughly) the center of the screen
+    static int ballSize = 10;                //Diameter of ball
+    static double ballSpeed = 5;   //Again, pixels moved per clock tick
+
+    //An angle in radians (which range from 0 to 2xPI (0 to about 6.3).
+    //This starts the ball moving down toward the human. Replace with some of the other
+    //commented out versions for a different start angle
+    //set this to whatever you want (but helps if you angle towards a player)
+    static double ballDirection = Math.PI + 1;   //heading left and up
+    //static double ballDirection = 1;
+    //static double ballDirection = 0;   //heading right
+    //static double ballDirection = Math.PI;   //heading left
+
+//    static boolean playAgain;
+
     //Checks to see if the ball has hit a wall or paddle
     //If so, bounce off the wall/paddle
     //And then move ball in the correct direction
@@ -17,33 +36,40 @@ public class Ball {
         boolean hitHumanPaddle = false;
         boolean hitComputerPaddle = false;
 
-        if (Main.ballX <= 0 || Main.ballX >= Main.screenSize ) {  // off the screen width-wise
+        if (ballX <= 0 || ballX + ballSize >= Main.screenSize ) {  // off the screen width-wise
+            if (ballX <= 0) {
+                HumanPaddle.humanWins += 1;
+            }  // increment human wins if the ball goes off screen on the computer paddle side
+            else {
+                ComputerPaddle.computerWins += 1;
+            }  // increment computer wins if the ball goes off the screen on the human paddle side
             Main.gameOver = true;  // the game ends
             return; // return
         }
-        if (Main.ballY <= 0 || Main.ballY >= Main.screenSize-Main.ballSize) {  // off the screen length-wise
+
+        if (ballY <= 0 || ballY >= Main.screenSize-ballSize) {  // off the screen length-wise
             hitWall = true;  // going to bounce
         }
 
         //If ballX is at a paddle AND ballY is within the paddle size.
         //Hit human paddle?
-        if (Main.ballX >= Main.screenSize-(Main.paddleDistanceFromSide+(Main.ballSize)) && (Main.ballY > Main.humanPaddleY-Main.paddleSize && Main.ballY < Main.humanPaddleY+Main.paddleSize))
+        if (ballX >= Main.screenSize-(Main.paddleDistanceFromSide+(ballSize)) && (ballY > HumanPaddle.humanPaddleY-Main.paddleSize && ballY < HumanPaddle.humanPaddleY+Main.paddleSize))
             hitHumanPaddle = true;
 
         //Hit computer paddle?
-        if (Main.ballX <= Main.paddleDistanceFromSide && (Main.ballY > Main.computerPaddleY-Main.paddleSize && Main.ballY < Main.computerPaddleY+Main.paddleSize))
+        if (ballX <= Main.paddleDistanceFromSide && (ballY > ComputerPaddle.computerPaddleY-Main.paddleSize && ballY < ComputerPaddle.computerPaddleY+Main.paddleSize))
             hitComputerPaddle = true;
 
 
         if (hitWall == true) {
             //bounce
-            Main.ballDirection = ( (2 * Math.PI) - Main.ballDirection );
-            System.out.println("ball direction " + Main.ballDirection);
+            ballDirection = ( (2 * Math.PI) - ballDirection );
+            System.out.println("ball direction " + ballDirection);
         }
 
         //Bounce off computer paddle - just need to modify direction
         if (hitComputerPaddle == true) {
-            Main.ballDirection = (Math.PI) - Main.ballDirection;
+            ballDirection = (Math.PI) - ballDirection;
             //TODO factor in speed into new direction
             //TODO So if paddle is moving down quickly, the ball will angle more down too
 
@@ -51,7 +77,7 @@ public class Ball {
 
         //Bounce off human paddle - just need to modify direction
         if (hitHumanPaddle == true) {
-            Main.ballDirection = (Math.PI) - Main.ballDirection;
+            ballDirection = (Math.PI) - ballDirection;
             //TODO consider speed of paddle
         }
 
@@ -62,8 +88,8 @@ public class Ball {
         //distance to move in the X direction is ballSpeed * cos(ballDirection)
         //distance to move in the Y direction is ballSpeed * sin(ballDirection)
 
-        Main.ballX = Main.ballX + (Main.ballSpeed * Math.cos(Main.ballDirection));
-        Main.ballY = Main.ballY + (Main.ballSpeed * Math.sin(Main.ballDirection));
+        ballX = ballX + (ballSpeed * Math.cos(ballDirection));
+        ballY = ballY + (ballSpeed * Math.sin(ballDirection));
 
         // ** TRIGONOMETRY END **
 
